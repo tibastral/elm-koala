@@ -34,7 +34,7 @@ type alias Position =
 type alias Character =
     { position : Position
     , path : String
-    , vector : Position
+    , speed : Position
     }
 
 
@@ -149,9 +149,9 @@ win game =
         |> increaseVelocity
 
 
-updateVector : Position -> Character -> Character
-updateVector vector character =
-    { character | vector = vector }
+updateSpeed : Position -> Character -> Character
+updateSpeed speed character =
+    { character | speed = speed }
 
 
 stepCharacter : Position -> Game -> Game
@@ -159,7 +159,7 @@ stepCharacter arrows game =
     { game
         | character =
             game.character
-                |> updateVector arrows
+                |> updateSpeed arrows
                 |> moveCharacter game.velocity
     }
 
@@ -231,7 +231,7 @@ lateralCollision a b axis =
 
 moveCharacter : Int -> Character -> Character
 moveCharacter velocity character =
-    { character | position = updatePosition character.position (velocity ** character.vector) }
+    { character | position = updatePosition character.position (velocity ** character.speed) }
 
 
 normalize : number -> number -> number
