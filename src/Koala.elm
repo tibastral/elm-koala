@@ -34,6 +34,7 @@ type alias Position =
 type alias Character =
     { position : Position
     , path : String
+    , vector : Position
     }
 
 
@@ -54,17 +55,17 @@ type alias Model =
 
 initialKoala : Character
 initialKoala =
-    Character (Position 0 0) "images/koala.png"
+    Character (Position 0 0) "images/koala.png" (Position 0 0)
 
 
 initialFlag : Character
 initialFlag =
-    Character (Position 1024 768) "images/flag.png"
+    Character (Position 1024 768) "images/flag.png" (Position 0 0)
 
 
 initialEnemy : Character
 initialEnemy =
-    Character (Position 300 300) "images/enemy.png"
+    Character (Position 300 300) "images/enemy.png" (Position 1 1)
 
 
 initialGame : Game
@@ -148,9 +149,19 @@ win game =
         |> increaseVelocity
 
 
+updateVector : Position -> Character -> Character
+updateVector vector character =
+    { character | vector = vector }
+
+
 stepCharacter : Position -> Game -> Game
 stepCharacter arrows game =
-    { game | character = game.character |> moveCharacter (game.velocity ** arrows) }
+    { game
+        | character =
+            game.character
+                |> updateVector arrows
+                |> moveCharacter game.velocity
+    }
 
 
 stepEnemies : Game -> Game
@@ -218,9 +229,9 @@ lateralCollision a b axis =
     abs (axis a - axis b) < halfSpriteSize
 
 
-moveCharacter : Position -> Character -> Character
-moveCharacter vector character =
-    { character | position = updatePosition character.position vector }
+moveCharacter : Int -> Character -> Character
+moveCharacter velocity character =
+    { character | position = updatePosition character.position (velocity ** character.vector) }
 
 
 normalize : number -> number -> number
@@ -243,7 +254,7 @@ updatePosition position { x, y } =
 
 moveCharacters : Int -> List Character -> List Character
 moveCharacters velocity enemies =
-    enemies |> map (moveCharacter (velocity ** { x = 1, y = 1 }))
+    enemies |> map (moveCharacter velocity)
 
 
 
