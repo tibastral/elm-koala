@@ -6,6 +6,7 @@ import Html.App as Html
 import Keyboard.Extra
 import Time exposing (Time, second)
 import List exposing (..)
+import Random
 
 
 -- import Random
@@ -35,6 +36,7 @@ type alias Character =
     { position : Position
     , path : String
     , speed : Position
+    , id : Int
     }
 
 
@@ -43,6 +45,7 @@ type alias Game =
     , enemies : List Character
     , goal : Character
     , velocity : Int
+    , enemiesCounter : Int
     }
 
 
@@ -55,22 +58,22 @@ type alias Model =
 
 initialKoala : Character
 initialKoala =
-    Character (Position 0 0) "images/koala.png" (Position 0 0)
+    Character (Position 0 0) "images/koala.png" (Position 0 0) 0
 
 
 initialFlag : Character
 initialFlag =
-    Character (Position 1024 768) "images/flag.png" (Position 0 0)
+    Character (Position 1024 768) "images/flag.png" (Position 0 0) 1
 
 
 initialEnemy : Character
 initialEnemy =
-    Character (Position 300 300) "images/enemy.png" (Position 1 1)
+    Character (Position 300 300) "images/enemy.png" (Position -1 -1) 2
 
 
 initialGame : Game
 initialGame =
-    Game initialKoala [ initialEnemy ] initialFlag 3
+    Game initialKoala [ initialEnemy ] initialFlag 3 0
 
 
 initialPosition : Position
@@ -100,6 +103,7 @@ init =
 type Msg
     = KeyboardMsg Keyboard.Extra.Msg
     | Tick Time
+    | UpdateSpeed Int Position
 
 
 handleKeyboard : Model -> Keyboard.Extra.Msg -> ( Model, Cmd Msg )
@@ -116,6 +120,30 @@ handleKeyboard model keyMsg =
         )
 
 
+updateSpeeds : Int -> Position -> List Character -> List Character
+updateSpeeds id speed elements =
+    filter (\e -> e.id == id) elements
+        |> map (\e -> { e | speed = speed })
+
+
+updateEnemySpeed : Game -> Int -> Position -> Game
+updateEnemySpeed game enemyId speed =
+    { game | enemies = updateSpeeds enemyId speed game.enemies }
+
+
+updateSpeedGenerator id =
+  Random.map2
+    (\x y -> UpdateSpeed id {x = x, y = y})
+    (Random.int -1 1)
+    (Random.int -1 1)
+
+generateEnemiesRandom : List Enemy -> Cmd Msg
+generateEnemiesRandom enemies =
+  enemies
+    |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
+    |> Cmd.batch
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -123,7 +151,10 @@ update msg model =
             handleKeyboard model keyMsg
 
         Tick newTime ->
-            ( { model | game = updateGame model.game model.arrows }, Cmd.none )
+            ( { model | game = updateGame model.game model.arrows }, generateEnemiesRandom model.game.enemies )
+
+        UpdateSpeed enemyId speed ->
+            ( { model | game = updateEnemySpeed model.game enemyId speed }, Cmd.none )
 
 
 reinitKoala : Game -> Game
@@ -133,7 +164,7 @@ reinitKoala game =
 
 addEnemy : Game -> Game
 addEnemy game =
-    { game | enemies = initialEnemy :: game.enemies }
+    { game | enemies = { initialEnemy | id = game.enemiesCounter } :: game.enemies, enemiesCounter = game.enemiesCounter + 1 }
 
 
 increaseVelocity : Game -> Game
