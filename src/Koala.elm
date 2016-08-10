@@ -296,6 +296,7 @@ title { game } =
         ]
 
 
+charactersView : Game -> Html Msg
 charactersView game =
     div []
         (game
