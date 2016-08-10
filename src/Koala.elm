@@ -160,7 +160,9 @@ stepEnemies game =
 
 step : Position -> Game -> Game
 step arrows game =
-    game |> stepCharacter arrows |> stepEnemies
+    game
+        |> stepCharacter arrows
+        |> stepEnemies
 
 
 updateGame : Game -> Position -> Game
@@ -279,7 +281,9 @@ characterView { position, path } =
 
 characters : Game -> List Character
 characters { character, goal, enemies } =
-    character :: goal :: enemies
+    character
+        :: goal
+        :: enemies
 
 
 title : Model -> Html Msg
@@ -292,9 +296,17 @@ title { game } =
         ]
 
 
+charactersView game =
+    div []
+        (game
+            |> characters
+            |> map characterView
+        )
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ model |> title
-        , div [] (model.game |> characters |> map characterView)
+        , charactersView model.game
         ]
