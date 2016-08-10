@@ -164,6 +164,7 @@ reinitKoala game =
     { game | character = initialKoala }
 
 
+newEnemy : Int -> Character
 newEnemy counter =
     { initialEnemy | id = counter }
 
