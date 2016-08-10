@@ -158,21 +158,29 @@ stepEnemies game =
     { game | enemies = game.enemies |> moveCharacters game.velocity }
 
 
-step : Position -> Game -> Game
-step arrows game =
-    game
-        |> stepCharacter arrows
-        |> stepEnemies
+handleWinning : Game -> Game
+handleWinning game =
+    if isWinning game then
+        game |> win
+    else
+        game
+
+
+handleLoosing : Game -> Game
+handleLoosing game =
+    if isLoosing game then
+        initialGame
+    else
+        game
 
 
 updateGame : Game -> Position -> Game
 updateGame game arrows =
-    if isWinning game then
-        game |> win
-    else if isLoosing game then
-        initialGame
-    else
-        game |> step arrows
+    game
+        |> handleWinning
+        |> handleLoosing
+        |> stepCharacter arrows
+        |> stepEnemies
 
 
 isWinning : Game -> Bool
