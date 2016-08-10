@@ -58,17 +58,17 @@ type alias Model =
 
 initialKoala : Character
 initialKoala =
-    Character (Position 0 0) "images/koala.png" (Position 0 0) 0
+    Character (Position 0 0) "images/koala.png" (Position 0 0) -1
 
 
 initialFlag : Character
 initialFlag =
-    Character (Position 1024 768) "images/flag.png" (Position 0 0) 1
+    Character (Position 1024 768) "images/flag.png" (Position 0 0) -2
 
 
 initialEnemy : Character
 initialEnemy =
-    Character (Position 300 300) "images/enemy.png" (Position -1 -1) 2
+    Character (Position 300 300) "images/enemy.png" (Position -1 -1) 1
 
 
 initialGame : Game
@@ -131,17 +131,19 @@ updateEnemySpeed game enemyId speed =
     { game | enemies = updateSpeeds enemyId speed game.enemies }
 
 
+updateSpeedGenerator : Int -> Random.Generator Msg
 updateSpeedGenerator id =
-  Random.map2
-    (\x y -> UpdateSpeed id {x = x, y = y})
-    (Random.int -1 1)
-    (Random.int -1 1)
+    Random.map2
+        (\x y -> UpdateSpeed id { x = x, y = y })
+        (Random.int -1 1)
+        (Random.int -1 1)
 
-generateEnemiesRandom : List Enemy -> Cmd Msg
+
+generateEnemiesRandom : List Character -> Cmd Msg
 generateEnemiesRandom enemies =
-  enemies
-    |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
-    |> Cmd.batch
+    enemies
+        |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
+        |> Cmd.batch
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -162,9 +164,13 @@ reinitKoala game =
     { game | character = initialKoala }
 
 
+newEnemy counter =
+    { initialEnemy | id = counter }
+
+
 addEnemy : Game -> Game
 addEnemy game =
-    { game | enemies = { initialEnemy | id = game.enemiesCounter } :: game.enemies, enemiesCounter = game.enemiesCounter + 1 }
+    { game | enemies = (newEnemy game.enemiesCounter) :: game.enemies, enemiesCounter = game.enemiesCounter + 1 }
 
 
 increaseVelocity : Game -> Game
