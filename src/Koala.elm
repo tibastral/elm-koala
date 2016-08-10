@@ -73,7 +73,7 @@ initialEnemy =
 
 initialGame : Game
 initialGame =
-    Game initialKoala [ initialEnemy ] initialFlag 3 0
+    Game initialKoala [ initialEnemy ] initialFlag 3 2
 
 
 initialPosition : Position
@@ -121,9 +121,15 @@ handleKeyboard model keyMsg =
 
 
 updateSpeeds : Int -> Position -> List Character -> List Character
-updateSpeeds id speed elements =
-    filter (\e -> e.id == id) elements
-        |> map (\e -> { e | speed = speed })
+updateSpeeds id speed characters =
+    characters
+        |> map
+            (\e ->
+                if e.id == id then
+                    { e | speed = speed }
+                else
+                    e
+            )
 
 
 updateEnemySpeed : Game -> Int -> Position -> Game
@@ -171,7 +177,10 @@ newEnemy counter =
 
 addEnemy : Game -> Game
 addEnemy game =
-    { game | enemies = (newEnemy game.enemiesCounter) :: game.enemies, enemiesCounter = game.enemiesCounter + 1 }
+    { game
+        | enemies = (newEnemy game.enemiesCounter) :: game.enemies
+        , enemiesCounter = game.enemiesCounter + 1
+    }
 
 
 increaseVelocity : Game -> Game
