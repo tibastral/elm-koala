@@ -159,7 +159,12 @@ update msg model =
             handleKeyboard model keyMsg
 
         Tick newTime ->
-            ( { model | game = updateGame model.game model.arrows }, generateEnemiesRandom model.game.enemies )
+            ( { model | game = updateGame model.game model.arrows }
+            , if (round (Time.inMilliseconds newTime)) % 100 == 0 then
+                generateEnemiesRandom model.game.enemies
+              else
+                Cmd.none
+            )
 
         UpdateSpeed enemyId speed ->
             ( { model | game = updateEnemySpeed model.game enemyId speed }, Cmd.none )
@@ -213,23 +218,31 @@ stepCharacter arrows game =
 
 stepEnemies : Game -> Game
 stepEnemies game =
-    { game | enemies = game.enemies |> moveCharacters game.velocity }
+    { game
+        | enemies =
+            game.enemies
+                |> moveCharacters game.velocity
+    }
+
+
+ifonly : (a -> Bool) -> a -> a -> a
+ifonly testFunction newVal a =
+    if testFunction a then
+        newVal
+    else
+        a
 
 
 handleWinning : Game -> Game
 handleWinning game =
-    if isWinning game then
-        game |> win
-    else
-        game
+    game
+        |> ifonly isWinning (game |> win)
 
 
 handleLoosing : Game -> Game
 handleLoosing game =
-    if isLoosing game then
-        initialGame
-    else
-        game
+    game
+        |> ifonly isLoosing initialGame
 
 
 updateGame : Game -> Position -> Game
@@ -301,7 +314,8 @@ updatePosition position { x, y } =
 
 moveCharacters : Int -> List Character -> List Character
 moveCharacters velocity enemies =
-    enemies |> map (moveCharacter velocity)
+    enemies
+        |> map (moveCharacter velocity)
 
 
 
