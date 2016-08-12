@@ -157,16 +157,6 @@ charactersView game =
 view : Model -> Html Msg
 view model =
     div []
-        [ title model.game
+        [ Html.map Game.Msg (Game.title model.game)
         , charactersView model.game
-        ]
-
-
-title : Game -> Html Msg
-title { enemies } =
-    h1 [ style [ ( "position", "absolute" ) ] ]
-        [ enemies
-            |> length
-            |> toString
-            |> text
         ]

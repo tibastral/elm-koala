@@ -112,3 +112,13 @@ characters { character, goal, enemies } =
     character
         :: goal
         :: enemies
+
+
+title : Game -> Html Msg
+title { enemies } =
+    h1 [ style [ ( "position", "absolute" ) ] ]
+        [ enemies
+            |> length
+            |> toString
+            |> text
+        ]
