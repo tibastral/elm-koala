@@ -1,18 +1,22 @@
 module Koala exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.App as Html
 import Keyboard.Extra
 import Time exposing (Time, second)
-import List exposing (..)
-import Helpers exposing (..)
 import Position exposing (Position)
-import Character exposing (Character)
 import Game exposing (Game)
 
 
 -- import Random
+
+
+config :
+    { fps : Float
+    }
+config =
+    { fps = 60
+    }
 
 
 main : Program Never
@@ -39,7 +43,7 @@ type alias Model =
 type Msg
     = KeyboardMsg Keyboard.Extra.Msg
     | Tick Time
-    | MyGame Game.Msg
+    | GameMsg Game.Msg
 
 
 initialKeyboard : Keyboard.Extra.Model
@@ -83,22 +87,14 @@ update msg model =
 
         Tick newTime ->
             ( { model | game = Game.step model.game model.arrows }
-            , if (round (Time.inMilliseconds newTime)) % 50 == 0 then
-                Cmd.map MyGame (Game.generateEnemiesRandom model.game.enemies)
+            , if (round (Time.inMilliseconds newTime)) % 100 == 0 then
+                Cmd.map GameMsg (Game.generateEnemiesRandom model.game)
               else
                 Cmd.none
             )
 
-        MyGame msg ->
+        GameMsg msg ->
             ( { model | game = Game.update msg model.game }, Cmd.none )
-
-
-config :
-    { fps : Float
-    }
-config =
-    { fps = 60
-    }
 
 
 
@@ -117,30 +113,9 @@ subscriptions model =
 -- VIEW
 
 
-characterView : Character -> Html Msg
-characterView { position, path } =
-    div
-        [ style
-            [ ( "position", "absolute" )
-            , ( "left", position.x |> toPx )
-            , ( "top", position.y |> toPx )
-            ]
-        ]
-        [ img [ src path, width Position.spriteSize, height Position.spriteSize ] [] ]
-
-
-charactersView : Game -> Html Msg
-charactersView game =
-    div []
-        (game
-            |> Game.characters
-            |> map characterView
-        )
-
-
 view : Model -> Html Msg
 view model =
     div []
-        [ Html.map MyGame (Game.title model.game)
-        , charactersView model.game
+        [ Html.map GameMsg (Game.title model.game)
+        , Html.map GameMsg (Game.charactersView model.game)
         ]

@@ -140,8 +140,29 @@ updateSpeedGenerator id =
         (Random.int -1 1)
 
 
-generateEnemiesRandom : List Character -> Cmd Msg
-generateEnemiesRandom enemies =
+generateEnemiesRandom : Game -> Cmd Msg
+generateEnemiesRandom { enemies } =
     enemies
         |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
         |> Cmd.batch
+
+
+characterView : Character -> Html Msg
+characterView { position, path } =
+    div
+        [ style
+            [ ( "position", "absolute" )
+            , ( "left", position.x |> toPx )
+            , ( "top", position.y |> toPx )
+            ]
+        ]
+        [ img [ src path, width Position.spriteSize, height Position.spriteSize ] [] ]
+
+
+charactersView : Game -> Html Msg
+charactersView game =
+    div []
+        (game
+            |> characters
+            |> map characterView
+        )
