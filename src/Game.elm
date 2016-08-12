@@ -6,6 +6,7 @@ import Helpers exposing (..)
 import List exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Random
 
 
 type Msg
@@ -114,6 +115,13 @@ characters { character, goal, enemies } =
         :: enemies
 
 
+update : Msg -> Game -> Game
+update msg game =
+    case msg of
+        UpdateSpeed enemyId speed ->
+            updateEnemySpeed game enemyId speed
+
+
 title : Game -> Html Msg
 title { enemies } =
     h1 [ style [ ( "position", "absolute" ) ] ]
@@ -122,3 +130,18 @@ title { enemies } =
             |> toString
             |> text
         ]
+
+
+updateSpeedGenerator : Int -> Random.Generator Msg
+updateSpeedGenerator id =
+    Random.map2
+        (\x y -> UpdateSpeed id { x = x, y = y })
+        (Random.int -1 1)
+        (Random.int -1 1)
+
+
+generateEnemiesRandom : List Character -> Cmd Msg
+generateEnemiesRandom enemies =
+    enemies
+        |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
+        |> Cmd.batch

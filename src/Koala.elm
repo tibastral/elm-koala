@@ -6,7 +6,6 @@ import Html.App as Html
 import Keyboard.Extra
 import Time exposing (Time, second)
 import List exposing (..)
-import Random
 import Helpers exposing (..)
 import Position exposing (Position)
 import Character exposing (Character)
@@ -40,7 +39,7 @@ type alias Model =
 type Msg
     = KeyboardMsg Keyboard.Extra.Msg
     | Tick Time
-    | UpdateSpeed Int Position
+    | MyGame Game.Msg
 
 
 initialKeyboard : Keyboard.Extra.Model
@@ -76,21 +75,6 @@ handleKeyboard model keyMsg =
         )
 
 
-updateSpeedGenerator : Int -> Random.Generator Msg
-updateSpeedGenerator id =
-    Random.map2
-        (\x y -> UpdateSpeed id { x = x, y = y })
-        (Random.int -1 1)
-        (Random.int -1 1)
-
-
-generateEnemiesRandom : List Character -> Cmd Msg
-generateEnemiesRandom enemies =
-    enemies
-        |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
-        |> Cmd.batch
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -99,14 +83,14 @@ update msg model =
 
         Tick newTime ->
             ( { model | game = Game.step model.game model.arrows }
-            , if (round (Time.inMilliseconds newTime)) % 100 == 0 then
-                generateEnemiesRandom model.game.enemies
+            , if (round (Time.inMilliseconds newTime)) % 50 == 0 then
+                Cmd.map MyGame (Game.generateEnemiesRandom model.game.enemies)
               else
                 Cmd.none
             )
 
-        UpdateSpeed enemyId speed ->
-            ( { model | game = Game.updateEnemySpeed model.game enemyId speed }, Cmd.none )
+        MyGame msg ->
+            ( { model | game = Game.update msg model.game }, Cmd.none )
 
 
 config :
@@ -157,6 +141,6 @@ charactersView game =
 view : Model -> Html Msg
 view model =
     div []
-        [ Html.map Game.Msg (Game.title model.game)
+        [ Html.map MyGame (Game.title model.game)
         , charactersView model.game
         ]
