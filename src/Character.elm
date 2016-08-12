@@ -24,7 +24,7 @@ initialKoala =
 
 initialFlag : Character
 initialFlag =
-    positionned 1024 768 "images/koala.png" 0
+    positionned 1024 768 "images/flag.png" 0
 
 
 initialEnemy : Character
