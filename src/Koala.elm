@@ -37,6 +37,12 @@ type alias Model =
     }
 
 
+type Msg
+    = KeyboardMsg Keyboard.Extra.Msg
+    | Tick Time
+    | UpdateSpeed Int Position
+
+
 initialKeyboard : Keyboard.Extra.Model
 initialKeyboard =
     fst Keyboard.Extra.init
@@ -54,12 +60,6 @@ init =
 
 
 -- UPDATE
-
-
-type Msg
-    = KeyboardMsg Keyboard.Extra.Msg
-    | Tick Time
-    | UpdateSpeed Int Position
 
 
 handleKeyboard : Model -> Keyboard.Extra.Msg -> ( Model, Cmd Msg )
@@ -98,7 +98,7 @@ update msg model =
             handleKeyboard model keyMsg
 
         Tick newTime ->
-            ( { model | game = Game.update model.game model.arrows }
+            ( { model | game = Game.step model.game model.arrows }
             , if (round (Time.inMilliseconds newTime)) % 100 == 0 then
                 generateEnemiesRandom model.game.enemies
               else
@@ -154,19 +154,19 @@ charactersView game =
         )
 
 
-title : Model -> Html Msg
-title { game } =
-    h1 [ style [ ( "position", "absolute" ) ] ]
-        [ game.enemies
-            |> length
-            |> toString
-            |> text
-        ]
-
-
 view : Model -> Html Msg
 view model =
     div []
-        [ model |> title
+        [ title model.game
         , charactersView model.game
+        ]
+
+
+title : Game -> Html Msg
+title { enemies } =
+    h1 [ style [ ( "position", "absolute" ) ] ]
+        [ enemies
+            |> length
+            |> toString
+            |> text
         ]

@@ -44,8 +44,8 @@ normalize =
     clamp 0
 
 
-update : Position -> Position -> Position
-update position { x, y } =
+add : Position -> Position -> Position
+add position { x, y } =
     { position
         | x = normalize 1000 (position.x + x)
         , y = normalize 768 (position.y - y)

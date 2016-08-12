@@ -44,7 +44,7 @@ newEnemy counter =
 
 move : Int -> Character -> Character
 move velocity character =
-    { character | position = Position.update character.position (velocity `Position.scalarMultiplication` character.speed) }
+    { character | position = Position.add character.position (velocity `Position.scalarMultiplication` character.speed) }
 
 
 moveList : Int -> List Character -> List Character

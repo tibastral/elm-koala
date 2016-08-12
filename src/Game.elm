@@ -4,6 +4,12 @@ import Position exposing (Position)
 import Character exposing (Character)
 import Helpers exposing (..)
 import List exposing (..)
+import Html exposing (..)
+import Html.Attributes exposing (..)
+
+
+type Msg
+    = UpdateSpeed Int Position
 
 
 type alias Game =
@@ -82,8 +88,8 @@ handleLoosing game =
         |> ifonly isLoosing initial
 
 
-update : Game -> Position -> Game
-update game arrows =
+step : Game -> Position -> Game
+step game arrows =
     game
         |> handleWinning
         |> handleLoosing
