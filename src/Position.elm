@@ -1,22 +1,13 @@
 module Position exposing (..)
 
 import List exposing (..)
+import Helpers exposing (..)
 
 
 type alias Position =
     { x : Int
     , y : Int
     }
-
-
-spriteSize : number
-spriteSize =
-    128
-
-
-halfSpriteSize : Int
-halfSpriteSize =
-    spriteSize / 2 |> round
 
 
 fromXY : Int -> Int -> Position

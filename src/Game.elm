@@ -156,7 +156,7 @@ characterView { position, path } =
             , ( "top", position.y |> toPx )
             ]
         ]
-        [ img [ src path, width Position.spriteSize, height Position.spriteSize ] [] ]
+        [ img [ src path, width spriteSize, height spriteSize ] [] ]
 
 
 charactersView : Game -> Html Msg

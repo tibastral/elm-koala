@@ -12,3 +12,13 @@ ifonly testFunction newVal a =
 toPx : Int -> String
 toPx i =
     (i |> toString) ++ "px"
+
+
+spriteSize : number
+spriteSize =
+    128
+
+
+halfSpriteSize : Int
+halfSpriteSize =
+    spriteSize / 2 |> round
