@@ -6,7 +6,6 @@ import Helpers exposing (..)
 import List exposing (..)
 import Html exposing (..)
 import Html.App as Html
-import Html.Attributes exposing (..)
 import Random
 
 
@@ -23,12 +22,13 @@ type alias Game =
     , goal : Character
     , velocity : Int
     , enemiesCounter : Int
+    , hiScore : Int
     }
 
 
 initial : Game
 initial =
-    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2
+    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0
 
 
 updateEnemySpeed : Game -> Int -> Position -> Game
@@ -108,8 +108,18 @@ isLoosing { character, enemies } =
 
 handleLoosing : Game -> Game
 handleLoosing game =
-    game
-        |> ifonly isLoosing initial
+    let
+        hiScore : Int
+        hiScore =
+            case List.maximum [ game.enemiesCounter - 2, game.hiScore ] of
+                Just i ->
+                    i
+
+                Nothing ->
+                    0
+    in
+        game
+            |> ifonly isLoosing { initial | hiScore = hiScore }
 
 
 update : Msg -> Game -> Game
@@ -121,16 +131,6 @@ update msg game =
         -- For now, this code isn't handling messages passed to the Hero, Goal or Enemies
         _ ->
             game
-
-
-title : Game -> Html Msg
-title { enemies } =
-    h1 [ style [ ( "position", "absolute" ) ] ]
-        [ enemies
-            |> length
-            |> toString
-            |> text
-        ]
 
 
 updateSpeedGenerator : Int -> Random.Generator Msg
@@ -151,8 +151,7 @@ generateRandomEnemies { enemies } =
 view : Game -> Html Msg
 view game =
     div []
-        [ game |> title
-        , game.enemies |> Character.viewList |> Html.map EnemiesMsg
+        [ game.enemies |> Character.viewList |> Html.map EnemiesMsg
         , game.goal |> Character.view |> Html.map GoalMsg
         , game.character |> Character.view |> Html.map HeroMsg
         ]

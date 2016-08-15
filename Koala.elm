@@ -2,7 +2,9 @@ module Koala exposing (..)
 
 import Html exposing (..)
 import Html.App as Html
+import Html.Attributes exposing (..)
 import Keyboard.Extra
+import List exposing (..)
 import Time exposing (Time, second)
 import Position exposing (Position)
 import Game exposing (Game)
@@ -115,11 +117,28 @@ subscriptions model =
         ]
 
 
+title : Model -> Html Msg
+title model =
+    h1 [ style [ ( "position", "absolute" ) ] ]
+        [ ("score : "
+            ++ (((model.game.enemies |> length) - 1)
+                    |> toString
+               )
+          )
+            |> text
+        , " hi-score : " |> text
+        , model.game.hiScore |> toString |> text
+        ]
+
+
 
 -- VIEW
 
 
 view : Model -> Html Msg
-view { game } =
-    Game.view game
-        |> Html.map GameMsg
+view model =
+    div []
+        [ model |> title
+        , Game.view model.game
+            |> Html.map GameMsg
+        ]
