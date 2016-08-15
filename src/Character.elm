@@ -19,19 +19,25 @@ type Msg
     = No
 
 
+
+{-
+   Characters Initializers (Koala is the hero)
+-}
+
+
 initialKoala : Character
 initialKoala =
-    positionned 0 0 "images/koala.png" 0
+    positionned 0 0 "/assets/images/koala.png" 0
 
 
 initialFlag : Character
 initialFlag =
-    positionned 1024 768 "images/flag.png" 0
+    positionned 1024 768 "/assets/images/flag.png" 0
 
 
 initialEnemy : Character
 initialEnemy =
-    positionned 300 300 "images/enemy.png" 1
+    positionned 300 300 "/assets/images/enemy.png" 1
 
 
 positionned : Int -> Int -> String -> Int -> Character

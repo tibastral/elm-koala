@@ -79,6 +79,15 @@ handleKeyboard model keyMsg =
         )
 
 
+generateRandomEnemies time model =
+    if (round (Time.inMilliseconds time)) % 100 == 0 then
+        model.game
+            |> Game.generateRandomEnemies
+            |> Cmd.map GameMsg
+    else
+        Cmd.none
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -87,12 +96,7 @@ update msg model =
 
         Tick newTime ->
             ( { model | game = Game.step model.game model.arrows }
-            , if (round (Time.inMilliseconds newTime)) % 100 == 0 then
-                model.game
-                    |> Game.generateRandomEnemies
-                    |> Cmd.map GameMsg
-              else
-                Cmd.none
+            , model |> generateRandomEnemies newTime
             )
 
         GameMsg msg ->

@@ -81,18 +81,6 @@ stepEnemies game =
     }
 
 
-handleWinning : Game -> Game
-handleWinning game =
-    game
-        |> ifonly isWinning (game |> win)
-
-
-handleLoosing : Game -> Game
-handleLoosing game =
-    game
-        |> ifonly isLoosing initial
-
-
 step : Game -> Position -> Game
 step game arrows =
     game
@@ -107,9 +95,21 @@ isWinning { character, goal } =
     character |> Character.collision goal
 
 
+handleWinning : Game -> Game
+handleWinning game =
+    game
+        |> ifonly isWinning (game |> win)
+
+
 isLoosing : Game -> Bool
 isLoosing { character, enemies } =
     enemies |> any (Character.collision character)
+
+
+handleLoosing : Game -> Game
+handleLoosing game =
+    game
+        |> ifonly isLoosing initial
 
 
 update : Msg -> Game -> Game
@@ -118,6 +118,7 @@ update msg game =
         UpdateSpeed enemyId speed ->
             updateEnemySpeed game enemyId speed
 
+        -- For now, this code isn't handling messages passed to the Hero, Goal or Enemies
         _ ->
             game
 
