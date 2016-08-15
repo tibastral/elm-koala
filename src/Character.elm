@@ -16,7 +16,7 @@ type alias Character =
 
 
 type Msg
-    = UpdateSpeed Int Position
+    = No
 
 
 initialKoala : Character
