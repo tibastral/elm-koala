@@ -112,13 +112,6 @@ isLoosing { character, enemies } =
     enemies |> any (Character.collision character)
 
 
-characters : Game -> List Character
-characters { character, goal, enemies } =
-    character
-        :: goal
-        :: enemies
-
-
 update : Msg -> Game -> Game
 update msg game =
     case msg of

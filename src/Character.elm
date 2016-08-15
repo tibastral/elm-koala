@@ -92,8 +92,6 @@ view { position, path } =
 viewList : List Character -> Html Msg
 viewList characters =
     div []
-        [ div []
-            (characters
-                |> map view
-            )
-        ]
+        (characters
+            |> map view
+        )
