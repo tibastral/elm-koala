@@ -106,7 +106,7 @@ isWinning { character, goal } =
 
 
 isLoosing : Game -> Bool
-isLoosing { enemies, character } =
+isLoosing { character, enemies } =
     enemies |> any (Character.collision character)
 
 
@@ -145,8 +145,8 @@ updateSpeedGenerator id =
         (Random.int -1 1)
 
 
-generateEnemiesRandom : Game -> Cmd Msg
-generateEnemiesRandom { enemies } =
+generateRandomEnemies : Game -> Cmd Msg
+generateRandomEnemies { enemies } =
     enemies
         |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
         |> Cmd.batch
@@ -156,5 +156,5 @@ view : Game -> Html Msg
 view game =
     div []
         [ game |> title
-        , game |> characters |> Character.viewCollection |> Html.map CharacterMsg
+        , game |> characters |> Character.viewList |> Html.map CharacterMsg
         ]

@@ -89,8 +89,8 @@ view { position, path } =
         [ img [ src path, width spriteSize, height spriteSize ] [] ]
 
 
-viewCollection : List Character -> Html Msg
-viewCollection characters =
+viewList : List Character -> Html Msg
+viewList characters =
     div []
         [ div []
             (characters

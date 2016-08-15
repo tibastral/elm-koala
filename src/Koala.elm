@@ -88,7 +88,9 @@ update msg model =
         Tick newTime ->
             ( { model | game = Game.step model.game model.arrows }
             , if (round (Time.inMilliseconds newTime)) % 100 == 0 then
-                Cmd.map GameMsg (Game.generateEnemiesRandom model.game)
+                model.game
+                    |> Game.generateRandomEnemies
+                    |> Cmd.map GameMsg
               else
                 Cmd.none
             )
