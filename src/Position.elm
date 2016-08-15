@@ -30,16 +30,30 @@ lateralCollision a b axis =
     abs (axis a - axis b) < halfSpriteSize
 
 
+maxWidth =
+    1000
+
+
+maxHeight =
+    768
+
+
 normalize : number -> number -> number
 normalize =
     clamp 0
 
 
+max =
+    { x = 1024
+    , y = 768
+    }
+
+
 add : Position -> Position -> Position
 add position { x, y } =
     { position
-        | x = normalize 1000 (position.x + x)
-        , y = normalize 768 (position.y - y)
+        | x = normalize max.x (position.x + x)
+        , y = normalize max.y (position.y - y)
     }
 
 

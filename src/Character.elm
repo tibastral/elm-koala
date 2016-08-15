@@ -52,13 +52,36 @@ newEnemy counter =
 
 move : Int -> Character -> Character
 move velocity character =
-    { character | position = Position.add character.position (velocity `Position.scalarMultiplication` character.speed) }
+    { character
+        | position = Position.add character.position (velocity `Position.scalarMultiplication` character.speed)
+    }
+
+
+invertSpeedIfEdge : Character -> Character
+invertSpeedIfEdge character =
+    let
+        position =
+            character.position
+
+        speed =
+            character.speed
+
+        newSpeed =
+            if position.x <= 0 || position.x >= Position.maxWidth then
+                { speed | x = 0 - speed.x }
+            else if position.y <= 0 || position.y >= Position.maxHeight then
+                { speed | y = 0 - speed.y }
+            else
+                speed
+    in
+        { character | speed = newSpeed }
 
 
 moveList : Int -> List Character -> List Character
 moveList velocity enemies =
     enemies
         |> map (move velocity)
+        |> map invertSpeedIfEdge
 
 
 updateSpeed : Position -> Character -> Character
@@ -72,7 +95,7 @@ updateSpeeds id speed characters =
         |> map
             (\e ->
                 if e.id == id then
-                    { e | speed = speed }
+                    e |> updateSpeed speed
                 else
                     e
             )
