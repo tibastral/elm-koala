@@ -159,11 +159,10 @@ characterView { position, path } =
         [ img [ src path, width spriteSize, height spriteSize ] [] ]
 
 
-charactersView : Game -> Html Msg
-charactersView game =
+charactersView : List Character -> Html Msg
+charactersView characters =
     div []
-        (game
-            |> characters
+        (characters
             |> map characterView
         )
 
@@ -172,5 +171,5 @@ view : Game -> Html Msg
 view game =
     div []
         [ title game
-        , (charactersView game)
+        , game |> characters |> charactersView
         ]

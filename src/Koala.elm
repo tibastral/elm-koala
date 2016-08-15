@@ -114,6 +114,6 @@ subscriptions model =
 
 
 view : Model -> Html Msg
-view model =
-    Game.view model.game
+view { game } =
+    Game.view game
         |> Html.map GameMsg
