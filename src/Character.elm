@@ -12,6 +12,7 @@ type alias Character =
     , path : String
     , speed : Position
     , id : Int
+    , looking : Looking
     }
 
 
@@ -42,7 +43,7 @@ initialEnemy =
 
 positionned : Int -> Int -> String -> Int -> Character
 positionned x y src id =
-    Character (Position.fromXY x y) src (Position.initial) id
+    Character (Position.fromXY x y) src (Position.initial) id Right
 
 
 newEnemy : Int -> Character
@@ -84,9 +85,21 @@ moveList velocity enemies =
         |> map invertSpeedIfEdge
 
 
+updateLooking looking speed =
+    if speed.x > 0 then
+        Right
+    else if speed.x < 0 then
+        Left
+    else
+        looking
+
+
 updateSpeed : Position -> Character -> Character
 updateSpeed speed character =
-    { character | speed = speed }
+    { character
+        | speed = speed
+        , looking = updateLooking character.looking speed
+    }
 
 
 updateSpeeds : Int -> Position -> List Character -> List Character
@@ -106,16 +119,32 @@ collision a b =
     Position.collision a.position b.position
 
 
-view : Character -> Html Msg
-view { position, path } =
-    div
-        [ style
+type Looking
+    = Right
+    | Left
+
+
+myStyle { position, speed, looking } =
+    let
+        baseStyle =
             [ ( "position", "absolute" )
             , ( "left", position.x |> toPx )
             , ( "top", position.y |> toPx )
             ]
+    in
+        if looking == Right then
+            baseStyle
+        else
+            ( "transform", "scaleX(-1)" ) :: baseStyle
+
+
+view : Character -> Html Msg
+view character =
+    div
+        [ style
+            (myStyle character)
         ]
-        [ img [ src path, width spriteSize, height spriteSize ] [] ]
+        [ img [ src character.path, width spriteSize, height spriteSize ] [] ]
 
 
 viewList : List Character -> Html Msg
