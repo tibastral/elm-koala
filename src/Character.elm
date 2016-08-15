@@ -1,10 +1,9 @@
 module Character exposing (..)
 
--- import Html exposing (..)
--- import Html.Attributes exposing (..)
--- import Html.App as Html
--- import Helpers exposing (..)
-
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.App as Html
+import Helpers exposing (..)
 import Position exposing (Position)
 import List exposing (..)
 
@@ -15,6 +14,10 @@ type alias Character =
     , speed : Position
     , id : Int
     }
+
+
+type Msg
+    = UpdateSpeed Int Position
 
 
 initialKoala : Character
@@ -70,6 +73,33 @@ updateSpeeds id speed characters =
             )
 
 
+updateCollection : List Character -> List Character
+updateCollection characters =
+    characters
+
+
 collision : Character -> Character -> Bool
 collision a b =
     Position.collision a.position b.position
+
+
+view : Character -> Html Msg
+view { position, path } =
+    div
+        [ style
+            [ ( "position", "absolute" )
+            , ( "left", position.x |> toPx )
+            , ( "top", position.y |> toPx )
+            ]
+        ]
+        [ img [ src path, width spriteSize, height spriteSize ] [] ]
+
+
+viewCollection : List Character -> Html Msg
+viewCollection characters =
+    div []
+        [ div []
+            (characters
+                |> map view
+            )
+        ]

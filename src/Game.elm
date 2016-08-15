@@ -5,12 +5,14 @@ import Character exposing (Character)
 import Helpers exposing (..)
 import List exposing (..)
 import Html exposing (..)
+import Html.App as Html
 import Html.Attributes exposing (..)
 import Random
 
 
 type Msg
     = UpdateSpeed Int Position
+    | CharacterMsg Character.Msg
 
 
 type alias Game =
@@ -121,6 +123,9 @@ update msg game =
         UpdateSpeed enemyId speed ->
             updateEnemySpeed game enemyId speed
 
+        CharacterMsg msg ->
+            game
+
 
 title : Game -> Html Msg
 title { enemies } =
@@ -147,29 +152,9 @@ generateEnemiesRandom { enemies } =
         |> Cmd.batch
 
 
-characterView : Character -> Html Msg
-characterView { position, path } =
-    div
-        [ style
-            [ ( "position", "absolute" )
-            , ( "left", position.x |> toPx )
-            , ( "top", position.y |> toPx )
-            ]
-        ]
-        [ img [ src path, width spriteSize, height spriteSize ] [] ]
-
-
-charactersView : List Character -> Html Msg
-charactersView characters =
-    div []
-        (characters
-            |> map characterView
-        )
-
-
 view : Game -> Html Msg
 view game =
     div []
         [ title game
-        , game |> characters |> charactersView
+        , game |> characters |> Character.viewCollection |> Html.map CharacterMsg
         ]
