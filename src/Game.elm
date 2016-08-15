@@ -12,7 +12,9 @@ import Random
 
 type Msg
     = UpdateSpeed Int Position
-    | CharacterMsg Character.Msg
+    | EnemiesMsg Character.Msg
+    | HeroMsg Character.Msg
+    | GoalMsg Character.Msg
 
 
 type alias Game =
@@ -123,7 +125,7 @@ update msg game =
         UpdateSpeed enemyId speed ->
             updateEnemySpeed game enemyId speed
 
-        CharacterMsg msg ->
+        _ ->
             game
 
 
@@ -156,5 +158,7 @@ view : Game -> Html Msg
 view game =
     div []
         [ game |> title
-        , game |> characters |> Character.viewList |> Html.map CharacterMsg
+        , game.enemies |> Character.viewList |> Html.map EnemiesMsg
+        , game.goal |> Character.view |> Html.map GoalMsg
+        , game.character |> Character.view |> Html.map HeroMsg
         ]
