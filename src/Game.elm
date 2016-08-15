@@ -166,3 +166,11 @@ charactersView game =
             |> characters
             |> map characterView
         )
+
+
+view : Game -> Html Msg
+view game =
+    div []
+        [ title game
+        , (charactersView game)
+        ]

@@ -115,7 +115,5 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ Html.map GameMsg (Game.title model.game)
-        , Html.map GameMsg (Game.charactersView model.game)
-        ]
+    Game.view model.game
+        |> Html.map GameMsg
