@@ -155,6 +155,6 @@ generateEnemiesRandom { enemies } =
 view : Game -> Html Msg
 view game =
     div []
-        [ title game
+        [ game |> title
         , game |> characters |> Character.viewCollection |> Html.map CharacterMsg
         ]

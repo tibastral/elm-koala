@@ -2,7 +2,6 @@ module Character exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.App as Html
 import Helpers exposing (..)
 import Position exposing (Position)
 import List exposing (..)
@@ -71,11 +70,6 @@ updateSpeeds id speed characters =
                 else
                     e
             )
-
-
-updateCollection : List Character -> List Character
-updateCollection characters =
-    characters
 
 
 collision : Character -> Character -> Bool
