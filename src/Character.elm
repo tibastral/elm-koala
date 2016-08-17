@@ -3,7 +3,7 @@ module Character exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Helpers exposing (..)
-import Position exposing (Position)
+import Position exposing (Position, max)
 import List exposing (..)
 
 
@@ -14,6 +14,11 @@ type alias Character =
     , id : Int
     , looking : Looking
     }
+
+
+type Looking
+    = Right
+    | Left
 
 
 type Msg
@@ -68,9 +73,9 @@ invertSpeedIfEdge character =
             character.speed
 
         newSpeed =
-            if position.x <= 0 || position.x >= Position.maxWidth then
+            if position.x == 0 || position.x == (.x Position.max) then
                 { speed | x = 0 - speed.x }
-            else if position.y <= 0 || position.y >= Position.maxHeight then
+            else if position.y <= 0 || position.y >= (.y Position.max) then
                 { speed | y = 0 - speed.y }
             else
                 speed
@@ -119,23 +124,18 @@ collision a b =
     Position.collision a.position b.position
 
 
-type Looking
-    = Right
-    | Left
+baseStyle { x, y } =
+    [ ( "position", "absolute" )
+    , ( "left", x |> toPx )
+    , ( "top", y |> toPx )
+    ]
 
 
 myStyle { position, speed, looking } =
-    let
-        baseStyle =
-            [ ( "position", "absolute" )
-            , ( "left", position.x |> toPx )
-            , ( "top", position.y |> toPx )
-            ]
-    in
-        if looking == Right then
-            baseStyle
-        else
-            ( "transform", "scaleX(-1)" ) :: baseStyle
+    if looking == Right then
+        baseStyle position
+    else
+        ( "transform", "scaleX(-1)" ) :: baseStyle position
 
 
 view : Character -> Html Msg
