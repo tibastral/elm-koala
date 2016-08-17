@@ -3,7 +3,7 @@ module Character exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Helpers exposing (..)
-import Position exposing (Position, BoundingBox, max)
+import Position exposing (Position, BoundingBox)
 import List exposing (..)
 
 
@@ -63,8 +63,8 @@ move velocity boundingBox character =
     }
 
 
-invertSpeedIfEdge : Character -> Character
-invertSpeedIfEdge character =
+invertSpeedIfEdge : BoundingBox -> Character -> Character
+invertSpeedIfEdge boundingBox character =
     let
         position =
             character.position
@@ -73,9 +73,9 @@ invertSpeedIfEdge character =
             character.speed
 
         newSpeed =
-            if position.x == 0 || position.x == (.x Position.max) then
+            if Position.touches position boundingBox .x then
                 { speed | x = 0 - speed.x }
-            else if position.y <= 0 || position.y >= (.y Position.max) then
+            else if Position.touches position boundingBox .y then
                 { speed | y = 0 - speed.y }
             else
                 speed
@@ -87,9 +87,10 @@ moveList : Int -> BoundingBox -> List Character -> List Character
 moveList velocity boundingBox enemies =
     enemies
         |> map (move velocity boundingBox)
-        |> map invertSpeedIfEdge
+        |> map (invertSpeedIfEdge boundingBox)
 
 
+updateLooking : Looking -> Position -> Looking
 updateLooking looking speed =
     if speed.x > 0 then
         Right
@@ -124,6 +125,7 @@ collision a b =
     Position.collision a.position b.position
 
 
+baseStyle : Position -> List ( String, String )
 baseStyle { x, y } =
     [ ( "position", "absolute" )
     , ( "left", x |> toPx )
@@ -131,6 +133,7 @@ baseStyle { x, y } =
     ]
 
 
+myStyle : Character -> List ( String, String )
 myStyle { position, speed, looking } =
     if looking == Right then
         baseStyle position

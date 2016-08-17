@@ -29,7 +29,7 @@ type alias Game =
 
 initial : Game
 initial =
-    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0 Position.initalBoundingBox
+    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0 Position.initialBoundingBox
 
 
 updateEnemySpeed : Game -> Int -> Position -> Game

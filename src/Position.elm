@@ -16,7 +16,8 @@ type alias BoundingBox =
     }
 
 
-initalBoundingBox =
+initialBoundingBox : BoundingBox
+initialBoundingBox =
     BoundingBox (fromXY 0 0) (fromXY 1024 768)
 
 
@@ -40,17 +41,17 @@ lateralCollision a b axis =
     abs (axis a - axis b) < halfSpriteSize
 
 
-normalize : number -> number -> number
-normalize =
-    clamp 0
-
-
 add : Position -> Position -> BoundingBox -> Position
 add position { x, y } boundingBox =
     { position
-        | x = normalize boundingBox.bottomRight.x (position.x + x)
-        , y = normalize boundingBox.bottomRight.y (position.y - y)
+        | x = clamp boundingBox.topLeft.x boundingBox.bottomRight.x (position.x + x)
+        , y = clamp boundingBox.topLeft.y boundingBox.bottomRight.y (position.y - y)
     }
+
+
+touches : Position -> BoundingBox -> (Position -> Int) -> Bool
+touches position boundingBox axis =
+    axis position == axis boundingBox.topLeft || axis position == axis boundingBox.bottomRight
 
 
 scalarMultiplication : number -> Position -> Position
