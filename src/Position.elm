@@ -10,6 +10,16 @@ type alias Position =
     }
 
 
+type alias BoundingBox =
+    { topLeft : Position
+    , bottomRight : Position
+    }
+
+
+initalBoundingBox =
+    BoundingBox (fromXY 0 0) (fromXY 1024 768)
+
+
 fromXY : Int -> Int -> Position
 fromXY x y =
     Position x y
@@ -35,18 +45,11 @@ normalize =
     clamp 0
 
 
-max : Position
-max =
-    { x = 1024
-    , y = 768
-    }
-
-
-add : Position -> Position -> Position
-add position { x, y } =
+add : Position -> Position -> BoundingBox -> Position
+add position { x, y } boundingBox =
     { position
-        | x = normalize max.x (position.x + x)
-        , y = normalize max.y (position.y - y)
+        | x = normalize boundingBox.bottomRight.x (position.x + x)
+        , y = normalize boundingBox.bottomRight.y (position.y - y)
     }
 
 

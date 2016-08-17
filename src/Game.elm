@@ -1,6 +1,6 @@
 module Game exposing (..)
 
-import Position exposing (Position)
+import Position exposing (Position, BoundingBox)
 import Character exposing (Character)
 import Helpers exposing (..)
 import List exposing (..)
@@ -23,12 +23,13 @@ type alias Game =
     , velocity : Int
     , enemiesCounter : Int
     , hiScore : Int
+    , boundingBox : BoundingBox
     }
 
 
 initial : Game
 initial =
-    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0
+    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0 Position.initalBoundingBox
 
 
 updateEnemySpeed : Game -> Int -> Position -> Game
@@ -68,7 +69,7 @@ stepCharacter arrows game =
         | character =
             game.character
                 |> Character.updateSpeed arrows
-                |> Character.move game.velocity
+                |> Character.move game.velocity game.boundingBox
     }
 
 
@@ -77,7 +78,7 @@ stepEnemies game =
     { game
         | enemies =
             game.enemies
-                |> Character.moveList game.velocity
+                |> Character.moveList game.velocity game.boundingBox
     }
 
 

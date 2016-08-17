@@ -3,7 +3,7 @@ module Character exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Helpers exposing (..)
-import Position exposing (Position, max)
+import Position exposing (Position, BoundingBox, max)
 import List exposing (..)
 
 
@@ -56,10 +56,10 @@ newEnemy counter =
     { initialEnemy | id = counter }
 
 
-move : Int -> Character -> Character
-move velocity character =
+move : Int -> BoundingBox -> Character -> Character
+move velocity boundingBox character =
     { character
-        | position = Position.add character.position (velocity `Position.scalarMultiplication` character.speed)
+        | position = Position.add character.position (velocity `Position.scalarMultiplication` character.speed) boundingBox
     }
 
 
@@ -83,10 +83,10 @@ invertSpeedIfEdge character =
         { character | speed = newSpeed }
 
 
-moveList : Int -> List Character -> List Character
-moveList velocity enemies =
+moveList : Int -> BoundingBox -> List Character -> List Character
+moveList velocity boundingBox enemies =
     enemies
-        |> map (move velocity)
+        |> map (move velocity boundingBox)
         |> map invertSpeedIfEdge
 
 
