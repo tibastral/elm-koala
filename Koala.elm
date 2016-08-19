@@ -82,7 +82,7 @@ handleKeyboard model keyMsg =
 
 
 generateRandomEnemies time model =
-    if (round (Time.inMilliseconds time)) % 100 == 0 then
+    if floor (Time.inMilliseconds time) % 100 == 0 then
         model.game
             |> Game.generateRandomEnemies
             |> Cmd.map GameMsg

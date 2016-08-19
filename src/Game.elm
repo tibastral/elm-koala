@@ -1,6 +1,7 @@
 module Game exposing (..)
 
-import Position exposing (Position, BoundingBox)
+import Position exposing (Position)
+import BoundingBox exposing (BoundingBox)
 import Character exposing (Character)
 import Helpers exposing (..)
 import List exposing (..)
@@ -29,7 +30,7 @@ type alias Game =
 
 initial : Game
 initial =
-    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0 Position.initialBoundingBox
+    Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0 BoundingBox.initialBoundingBox
 
 
 updateEnemySpeed : Game -> Int -> Position -> Game
@@ -44,10 +45,14 @@ reinitKoala game =
 
 addEnemy : Game -> Game
 addEnemy game =
-    { game
-        | enemies = (Character.newEnemy game.enemiesCounter) :: game.enemies
-        , enemiesCounter = game.enemiesCounter + 1
-    }
+    let
+        newEnemy =
+            Character.newEnemy game.enemiesCounter
+    in
+        { game
+            | enemies = { newEnemy | spriteSize = Position.fromXY (newEnemy.spriteSize.x + game.enemiesCounter * 5) (newEnemy.spriteSize.y + game.enemiesCounter * 5) } :: game.enemies
+            , enemiesCounter = game.enemiesCounter + 1
+        }
 
 
 increaseVelocity : Game -> Game

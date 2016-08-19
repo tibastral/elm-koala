@@ -3,7 +3,8 @@ module Character exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Helpers exposing (..)
-import Position exposing (Position, BoundingBox)
+import Position exposing (Position)
+import BoundingBox exposing (BoundingBox)
 import List exposing (..)
 
 
@@ -13,6 +14,7 @@ type alias Character =
     , speed : Position
     , id : Int
     , looking : Looking
+    , spriteSize : Position
     }
 
 
@@ -33,22 +35,25 @@ type Msg
 
 initialKoala : Character
 initialKoala =
-    positionned 0 0 "assets/images/koala.png" 0
+    positionned 0 0 "assets/images/koala.png" 0 24 48
 
 
 initialFlag : Character
 initialFlag =
-    positionned 1024 768 "assets/images/flag.png" 0
+    positionned 1024 768 "assets/images/flag.png" 0 117 104
 
 
 initialEnemy : Character
 initialEnemy =
-    positionned 300 300 "assets/images/enemy.png" 1
+    positionned 300 300 "assets/images/enemy.png" 1 82 84
 
 
-positionned : Int -> Int -> String -> Int -> Character
-positionned x y src id =
-    Character (Position.fromXY x y) src (Position.initial) id Right
+
+-- positionned : Int -> Int -> String -> Int -> Character
+
+
+positionned x y src id width height =
+    Character (Position.fromXY x y) src (Position.initial) id Right (Position.fromXY width height)
 
 
 newEnemy : Int -> Character
@@ -59,7 +64,7 @@ newEnemy counter =
 move : Int -> BoundingBox -> Character -> Character
 move velocity boundingBox character =
     { character
-        | position = Position.add character.position (velocity `Position.scalarMultiplication` character.speed) boundingBox
+        | position = BoundingBox.add character.position (velocity `Position.scalarMultiplication` character.speed) boundingBox
     }
 
 
@@ -73,9 +78,9 @@ invertSpeedIfEdge boundingBox character =
             character.speed
 
         newSpeed =
-            if Position.touches position boundingBox .x then
+            if BoundingBox.touches position boundingBox .x then
                 { speed | x = 0 - speed.x }
-            else if Position.touches position boundingBox .y then
+            else if BoundingBox.touches position boundingBox .y then
                 { speed | y = 0 - speed.y }
             else
                 speed
@@ -122,7 +127,9 @@ updateSpeeds id speed characters =
 
 collision : Character -> Character -> Bool
 collision a b =
-    Position.collision a.position b.position
+    BoundingBox.collision
+        (BoundingBox.fromPositionAndDimensions a.position a.spriteSize)
+        (BoundingBox.fromPositionAndDimensions b.position b.spriteSize)
 
 
 baseStyle : Position -> List ( String, String )
@@ -130,6 +137,7 @@ baseStyle { x, y } =
     [ ( "position", "absolute" )
     , ( "left", x |> toPx )
     , ( "top", y |> toPx )
+      -- , ( "border", "1px solid black" )
     ]
 
 
@@ -147,7 +155,7 @@ view character =
         [ style
             (myStyle character)
         ]
-        [ img [ src character.path, width spriteSize, height spriteSize ] [] ]
+        [ img [ src character.path, width character.spriteSize.x, height character.spriteSize.y ] [] ]
 
 
 viewList : List Character -> Html Msg
