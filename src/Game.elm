@@ -7,6 +7,8 @@ import Helpers exposing (..)
 import List exposing (..)
 import Html exposing (..)
 import Html.App as Html
+import Html.Attributes exposing (..)
+import Helpers exposing (..)
 import Random
 
 
@@ -156,7 +158,13 @@ generateRandomEnemies { enemies } =
 
 view : Game -> Html Msg
 view game =
-    div []
+    div
+        [ style
+            [ ( "width", game.boundingBox.bottomRight.x |> toPx )
+            , ( "height", game.boundingBox.bottomRight.y |> toPx )
+            , ( "border", "1px solid black" )
+            ]
+        ]
         [ game.enemies |> Character.viewList |> Html.map EnemiesMsg
         , game.goal |> Character.view |> Html.map GoalMsg
         , game.character |> Character.view |> Html.map HeroMsg

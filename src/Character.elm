@@ -40,7 +40,7 @@ initialKoala =
 
 initialFlag : Character
 initialFlag =
-    positionned 1024 768 "assets/images/flag.png" 0 117 104
+    positionned (1024 - 117) (768 - 104) "assets/images/flag.png" 0 117 104
 
 
 initialEnemy : Character
@@ -61,10 +61,26 @@ newEnemy counter =
     { initialEnemy | id = counter }
 
 
+add : Character -> Position -> BoundingBox -> Position
+add character { x, y } boundingBox =
+    let
+        position =
+            character.position
+    in
+        { position
+            | x = clamp boundingBox.topLeft.x (boundingBox.bottomRight.x - character.spriteSize.x) (position.x + x)
+            , y = clamp boundingBox.topLeft.y (boundingBox.bottomRight.y - character.spriteSize.y) (position.y - y)
+        }
+
+
 move : Int -> BoundingBox -> Character -> Character
-move velocity boundingBox character =
+move velocity outsideBox character =
     { character
-        | position = BoundingBox.add character.position (velocity `Position.scalarMultiplication` character.speed) boundingBox
+        | position =
+            add
+                character
+                (velocity `Position.scalarMultiplication` character.speed)
+                outsideBox
     }
 
 
@@ -137,7 +153,7 @@ baseStyle { x, y } =
     [ ( "position", "absolute" )
     , ( "left", x |> toPx )
     , ( "top", y |> toPx )
-      -- , ( "border", "1px solid black" )
+    , ( "border", "1px solid black" )
     ]
 
 
@@ -155,7 +171,7 @@ view character =
         [ style
             (myStyle character)
         ]
-        [ img [ src character.path, width character.spriteSize.x, height character.spriteSize.y ] [] ]
+        [ img [ style [ ( "display", "block" ) ], src character.path, width character.spriteSize.x, height character.spriteSize.y ] [] ]
 
 
 viewList : List Character -> Html Msg

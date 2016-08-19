@@ -14,31 +14,23 @@ initialBoundingBox =
     fromTwoPositions (Position.fromXY 0 0) (Position.fromXY 1024 768)
 
 
-add : Position -> Position -> BoundingBox -> Position
-add position { x, y } boundingBox =
-    { position
-        | x = clamp boundingBox.topLeft.x boundingBox.bottomRight.x (position.x + x)
-        , y = clamp boundingBox.topLeft.y boundingBox.bottomRight.y (position.y - y)
-    }
-
-
 touches : Position -> BoundingBox -> (Position -> Int) -> Bool
 touches position boundingBox axis =
     axis position == axis boundingBox.topLeft || axis position == axis boundingBox.bottomRight
 
 
-myWidth boundingBox =
+width boundingBox =
     boundingBox.bottomRight.x - boundingBox.topLeft.x
 
 
-myHeight boundingBox =
+height boundingBox =
     boundingBox.bottomRight.y - boundingBox.topLeft.y
 
 
 collision : BoundingBox -> BoundingBox -> Bool
 collision a b =
-    (abs (a.topLeft.x - b.topLeft.x) * 2 < (myWidth a) + (myWidth b))
-        && (abs (a.topLeft.y - b.topLeft.y) * 2 < (myHeight a) + (myHeight b))
+    (abs (a.topLeft.x - b.topLeft.x) * 2 < (width a) + (width b))
+        && (abs (a.topLeft.y - b.topLeft.y) * 2 < (height a) + (height b))
 
 
 
