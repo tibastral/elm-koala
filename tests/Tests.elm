@@ -3,28 +3,32 @@ module Tests exposing (..)
 import Test exposing (..)
 import Expect
 import String
+import BoundingBox exposing (..)
+import Character exposing (..)
 import Koala exposing (..)
+import Game
 
 
 all : Test
 all =
     describe "A Test Suite"
-        [ test "Addition" <|
+        [ test "Collision" <|
             \() ->
-                Expect.equal (3 + 7) 10
-        , test "String.left" <|
-            \() ->
-                Expect.equal "a" (String.left 1 "abcdefg")
-        , test "Collision" <|
-            \() ->
-                Expect.false "Collision didn't work" (collision initialKoala initialFlag)
+                Expect.false "Collision didn't work" (Character.collision initialKoala initialFlag)
         , test "CollisionPosition" <|
             \() ->
-                Expect.false "Collision didn't work" (positionCollision initialKoala.position initialFlag.position)
+                Expect.false "Initial state of game is loosing" (Game.isLoosing Game.initial)
         , test "CollisionPosition" <|
             \() ->
-                Expect.false "Collision didn't work" (isLoosing initialGame)
-        , test "CollisionPosition" <|
-            \() ->
-                Expect.true "Collision didn't work" (isLoosing (Game initialKoala [ initialKoala ] initialFlag 3))
+                let
+                    loosingCharacter =
+                        initialEnemy
+
+                    initialGame =
+                        Game.initial
+
+                    loosingGame =
+                        { initialGame | character = loosingCharacter }
+                in
+                    Expect.true "Loosing game didn't loose" (Game.isLoosing loosingGame)
         ]

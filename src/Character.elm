@@ -141,11 +141,15 @@ updateSpeeds id speed characters =
             )
 
 
+fromPositionAndDimensions { position, spriteSize } =
+    BoundingBox.fromTwoPositions position { position | x = position.x + spriteSize.x, y = position.y + spriteSize.y }
+
+
 collision : Character -> Character -> Bool
 collision a b =
     BoundingBox.collision
-        (BoundingBox.fromPositionAndDimensions a.position a.spriteSize)
-        (BoundingBox.fromPositionAndDimensions b.position b.spriteSize)
+        (fromPositionAndDimensions a)
+        (fromPositionAndDimensions b)
 
 
 baseStyle : Position -> List ( String, String )

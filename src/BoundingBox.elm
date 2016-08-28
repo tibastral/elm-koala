@@ -27,6 +27,11 @@ height boundingBox =
     boundingBox.bottomRight.y - boundingBox.topLeft.y
 
 
+
+-- we should integrate that
+-- https://www.toptal.com/game/video-game-physics-part-i-an-introduction-to-rigid-body-dynamics
+
+
 collision : BoundingBox -> BoundingBox -> Bool
 collision a b =
     (abs (a.topLeft.x - b.topLeft.x) * 2 < (width a) + (width b))
@@ -44,7 +49,3 @@ between begin end number =
 fromTwoPositions : Position -> Position -> BoundingBox
 fromTwoPositions a b =
     BoundingBox a b
-
-
-fromPositionAndDimensions a dimensions =
-    fromTwoPositions a { a | x = a.x + dimensions.x, y = a.y + dimensions.y }
