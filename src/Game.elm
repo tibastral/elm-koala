@@ -1,6 +1,6 @@
 module Game exposing (..)
 
-import Position exposing (Position)
+import Vector exposing (Vector)
 import BoundingBox exposing (BoundingBox)
 import Character exposing (Character)
 import Helpers exposing (..)
@@ -13,7 +13,7 @@ import Random
 
 
 type Msg
-    = UpdateSpeed Int Position
+    = UpdateSpeed Int Vector
     | EnemiesMsg Character.Msg
     | HeroMsg Character.Msg
     | GoalMsg Character.Msg
@@ -35,7 +35,7 @@ initial =
     Game Character.initialKoala [ Character.initialEnemy ] Character.initialFlag 3 2 0 BoundingBox.initialBoundingBox
 
 
-updateEnemySpeed : Game -> Int -> Position -> Game
+updateEnemySpeed : Game -> Int -> Vector -> Game
 updateEnemySpeed game enemyId speed =
     { game | enemies = Character.updateSpeeds enemyId speed game.enemies }
 
@@ -52,7 +52,7 @@ addEnemy game =
             Character.newEnemy game.enemiesCounter
     in
         { game
-            | enemies = { newEnemy | spriteSize = Position.fromXY (newEnemy.spriteSize.x + game.enemiesCounter * 5) (newEnemy.spriteSize.y + game.enemiesCounter * 5) } :: game.enemies
+            | enemies = { newEnemy | spriteSize = Vector.fromXY (newEnemy.spriteSize.x + game.enemiesCounter * 5) (newEnemy.spriteSize.y + game.enemiesCounter * 5) } :: game.enemies
             , enemiesCounter = game.enemiesCounter + 1
         }
 
@@ -70,7 +70,7 @@ win game =
         |> increaseVelocity
 
 
-stepCharacter : Position -> Game -> Game
+stepCharacter : Vector -> Game -> Game
 stepCharacter arrows game =
     { game
         | character =
@@ -89,7 +89,7 @@ stepEnemies game =
     }
 
 
-step : Game -> Position -> Game
+step : Game -> Vector -> Game
 step game arrows =
     game
         |> handleWinning

@@ -3,18 +3,18 @@ module Character exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Helpers exposing (..)
-import Position exposing (Position)
+import Vector exposing (Vector)
 import BoundingBox exposing (BoundingBox)
 import List exposing (..)
 
 
 type alias Character =
-    { position : Position
+    { position : Vector
     , path : String
-    , speed : Position
+    , speed : Vector
     , id : Int
     , looking : Looking
-    , spriteSize : Position
+    , spriteSize : Vector
     }
 
 
@@ -53,7 +53,7 @@ initialEnemy =
 
 
 positionned x y src id width height =
-    Character (Position.fromXY x y) src (Position.initial) id Right (Position.fromXY width height)
+    Character (Vector.fromXY x y) src (Vector.initial) id Right (Vector.fromXY width height)
 
 
 newEnemy : Int -> Character
@@ -61,7 +61,7 @@ newEnemy counter =
     { initialEnemy | id = counter }
 
 
-add : Character -> Position -> BoundingBox -> Position
+add : Character -> Vector -> BoundingBox -> Vector
 add character { x, y } boundingBox =
     let
         position =
@@ -79,7 +79,7 @@ move velocity outsideBox character =
         | position =
             add
                 character
-                (velocity `Position.scalarMultiplication` character.speed)
+                (velocity `Vector.scalarMultiplication` character.speed)
                 outsideBox
     }
 
@@ -111,7 +111,7 @@ moveList velocity boundingBox enemies =
         |> map (invertSpeedIfEdge boundingBox)
 
 
-updateLooking : Looking -> Position -> Looking
+updateLooking : Looking -> Vector -> Looking
 updateLooking looking speed =
     if speed.x > 0 then
         Right
@@ -121,7 +121,7 @@ updateLooking looking speed =
         looking
 
 
-updateSpeed : Position -> Character -> Character
+updateSpeed : Vector -> Character -> Character
 updateSpeed speed character =
     { character
         | speed = speed
@@ -129,7 +129,7 @@ updateSpeed speed character =
     }
 
 
-updateSpeeds : Int -> Position -> List Character -> List Character
+updateSpeeds : Int -> Vector -> List Character -> List Character
 updateSpeeds id speed characters =
     characters
         |> map
@@ -141,18 +141,18 @@ updateSpeeds id speed characters =
             )
 
 
-fromPositionAndDimensions { position, spriteSize } =
-    BoundingBox.fromTwoPositions position { position | x = position.x + spriteSize.x, y = position.y + spriteSize.y }
+fromVectorAndDimensions { position, spriteSize } =
+    BoundingBox.fromTwoVectors position { position | x = position.x + spriteSize.x, y = position.y + spriteSize.y }
 
 
 collision : Character -> Character -> Bool
 collision a b =
     BoundingBox.collision
-        (fromPositionAndDimensions a)
-        (fromPositionAndDimensions b)
+        (fromVectorAndDimensions a)
+        (fromVectorAndDimensions b)
 
 
-baseStyle : Position -> List ( String, String )
+baseStyle : Vector -> List ( String, String )
 baseStyle { x, y } =
     [ ( "position", "absolute" )
     , ( "left", x |> toPx )

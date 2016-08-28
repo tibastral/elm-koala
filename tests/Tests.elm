@@ -15,10 +15,10 @@ all =
         [ test "Collision" <|
             \() ->
                 Expect.false "Collision didn't work" (Character.collision initialKoala initialFlag)
-        , test "CollisionPosition" <|
+        , test "CollisionVector" <|
             \() ->
                 Expect.false "Initial state of game is loosing" (Game.isLoosing Game.initial)
-        , test "CollisionPosition" <|
+        , test "CollisionVector" <|
             \() ->
                 let
                     loosingCharacter =

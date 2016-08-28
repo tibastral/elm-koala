@@ -1,20 +1,20 @@
 module BoundingBox exposing (..)
 
-import Position exposing (Position)
+import Vector exposing (Vector)
 
 
 type alias BoundingBox =
-    { topLeft : Position
-    , bottomRight : Position
+    { topLeft : Vector
+    , bottomRight : Vector
     }
 
 
 initialBoundingBox : BoundingBox
 initialBoundingBox =
-    fromTwoPositions (Position.fromXY 0 0) (Position.fromXY 1024 768)
+    fromTwoVectors (Vector.fromXY 0 0) (Vector.fromXY 1024 768)
 
 
-touches : Position -> BoundingBox -> (Position -> Int) -> Bool
+touches : Vector -> BoundingBox -> (Vector -> Int) -> Bool
 touches position boundingBox axis =
     axis position == axis boundingBox.topLeft || axis position == axis boundingBox.bottomRight
 
@@ -46,6 +46,6 @@ between begin end number =
     number >= begin && number <= end
 
 
-fromTwoPositions : Position -> Position -> BoundingBox
-fromTwoPositions a b =
+fromTwoVectors : Vector -> Vector -> BoundingBox
+fromTwoVectors a b =
     BoundingBox a b

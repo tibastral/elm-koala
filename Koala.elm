@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import Keyboard.Extra
 import List exposing (..)
 import Time exposing (Time, second)
-import Position exposing (Position)
+import Vector exposing (Vector)
 import Game exposing (Game)
 
 
@@ -38,7 +38,7 @@ main =
 type alias Model =
     { keyboardModel : Keyboard.Extra.Model
     , game : Game
-    , arrows : Position
+    , arrows : Vector
     }
 
 
@@ -55,7 +55,7 @@ initialKeyboard =
 
 initialModel : Model
 initialModel =
-    Model initialKeyboard Game.initial Position.initial
+    Model initialKeyboard Game.initial Vector.initial
 
 
 init : ( Model, Cmd Msg )
