@@ -17,18 +17,18 @@ all =
                 Expect.false "Collision didn't work" (Character.collision initialKoala initialFlag)
         , test "CollisionVector" <|
             \() ->
-                Expect.false "Initial state of game is loosing" (Game.isLoosing Game.initial)
+                Expect.false "Initial state of game is losing" (Game.isLosing Game.initial)
         , test "CollisionVector" <|
             \() ->
                 let
-                    loosingCharacter =
+                    losingCharacter =
                         initialEnemy
 
                     initialGame =
                         Game.initial
 
-                    loosingGame =
-                        { initialGame | character = loosingCharacter }
+                    losingGame =
+                        { initialGame | character = losingCharacter }
                 in
-                    Expect.true "Loosing game didn't loose" (Game.isLoosing loosingGame)
+                    Expect.true "Losing game didn't lose" (Game.isLosing losingGame)
         ]

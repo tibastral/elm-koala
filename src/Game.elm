@@ -93,7 +93,7 @@ step : Game -> Vector -> Game
 step game arrows =
     game
         |> handleWinning
-        |> handleLoosing
+        |> handleLosing
         |> stepCharacter arrows
         |> stepEnemies
 
@@ -109,13 +109,13 @@ handleWinning game =
         |> ifonly isWinning (game |> win)
 
 
-isLoosing : Game -> Bool
-isLoosing { character, enemies } =
+isLosing : Game -> Bool
+isLosing { character, enemies } =
     enemies |> any (Character.collision character)
 
 
-handleLoosing : Game -> Game
-handleLoosing game =
+handleLosing : Game -> Game
+handleLosing game =
     let
         hiScore : Int
         hiScore =
@@ -127,7 +127,7 @@ handleLoosing game =
                     0
     in
         game
-            |> ifonly isLoosing { initial | hiScore = hiScore }
+            |> ifonly isLosing { initial | hiScore = hiScore }
 
 
 update : Msg -> Game -> Game
