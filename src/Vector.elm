@@ -17,6 +17,6 @@ initial =
     fromXY 0 0
 
 
-scalarMultiplication : number -> Vector -> Vector
+scalarMultiplication : Int -> Vector -> Vector
 scalarMultiplication velocity { x, y } =
     { x = x * velocity, y = y * velocity }
