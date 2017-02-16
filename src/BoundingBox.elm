@@ -19,10 +19,12 @@ touches position boundingBox axis =
     axis position == axis boundingBox.topLeft || axis position == axis boundingBox.bottomRight
 
 
+width : BoundingBox -> Int
 width boundingBox =
     boundingBox.bottomRight.x - boundingBox.topLeft.x
 
 
+height : BoundingBox -> Int
 height boundingBox =
     boundingBox.bottomRight.y - boundingBox.topLeft.y
 
@@ -42,6 +44,7 @@ collision a b =
 -- (a.topLeft.x |> between b.topLeft.x b.bottomRight.x) && (a.topLeft.y |> between b.topLeft.y b.topLeft.y)
 
 
+between : comparable -> comparable -> comparable -> Bool
 between begin end number =
     number >= begin && number <= end
 

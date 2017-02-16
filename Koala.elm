@@ -80,6 +80,7 @@ handleKeyboard model keyMsg =
         )
 
 
+generateRandomEnemies : Time -> Model -> Cmd Msg
 generateRandomEnemies time model =
     if floor (Time.inMilliseconds time) % 100 == 0 then
         model.game

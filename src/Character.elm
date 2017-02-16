@@ -52,6 +52,7 @@ initialEnemy =
 -- positionned : Int -> Int -> String -> Int -> Character
 
 
+positionned : Int -> Int -> String -> Int -> Int -> Int -> Character
 positionned x y src id width height =
     Character (Vector.fromXY x y) src (Vector.initial) id Right (Vector.fromXY width height)
 
@@ -141,6 +142,7 @@ updateSpeeds id speed characters =
             )
 
 
+fromVectorAndDimensions : Character -> BoundingBox
 fromVectorAndDimensions { position, spriteSize } =
     BoundingBox.fromTwoVectors position { position | x = position.x + spriteSize.x, y = position.y + spriteSize.y }
 
