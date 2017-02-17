@@ -52,6 +52,7 @@ initialEnemy =
 -- positionned : Int -> Int -> String -> Int -> Character
 
 
+positionned : Int -> Int -> String -> Int -> Int -> Int -> Character
 positionned x y src id width height =
     Character (Vector.fromXY x y) src (Vector.initial) id Right (Vector.fromXY width height)
 
@@ -79,7 +80,7 @@ move velocity outsideBox character =
         | position =
             add
                 character
-                (velocity `Vector.scalarMultiplication` character.speed)
+                (Vector.scalarMultiplication velocity character.speed)
                 outsideBox
     }
 
@@ -107,8 +108,8 @@ invertSpeedIfEdge boundingBox character =
 moveList : Int -> BoundingBox -> List Character -> List Character
 moveList velocity boundingBox enemies =
     enemies
-        |> map (move velocity boundingBox)
-        |> map (invertSpeedIfEdge boundingBox)
+        |> List.map (move velocity boundingBox)
+        |> List.map (invertSpeedIfEdge boundingBox)
 
 
 updateLooking : Looking -> Vector -> Looking
@@ -132,7 +133,7 @@ updateSpeed speed character =
 updateSpeeds : Int -> Vector -> List Character -> List Character
 updateSpeeds id speed characters =
     characters
-        |> map
+        |> List.map
             (\e ->
                 if e.id == id then
                     e |> updateSpeed speed
@@ -141,6 +142,7 @@ updateSpeeds id speed characters =
             )
 
 
+fromVectorAndDimensions : Character -> BoundingBox
 fromVectorAndDimensions { position, spriteSize } =
     BoundingBox.fromTwoVectors position { position | x = position.x + spriteSize.x, y = position.y + spriteSize.y }
 
@@ -182,5 +184,5 @@ viewList : List Character -> Html Msg
 viewList characters =
     div []
         (characters
-            |> map view
+            |> List.map view
         )

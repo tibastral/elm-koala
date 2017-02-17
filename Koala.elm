@@ -1,7 +1,6 @@
 module Koala exposing (..)
 
 import Html exposing (..)
-import Html.App as Html
 import Html.Attributes exposing (..)
 import Keyboard.Extra
 import List exposing (..)
@@ -21,7 +20,7 @@ config =
     }
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
@@ -50,7 +49,7 @@ type Msg
 
 initialKeyboard : Keyboard.Extra.Model
 initialKeyboard =
-    fst Keyboard.Extra.init
+    Tuple.first Keyboard.Extra.init
 
 
 initialModel : Model
@@ -81,6 +80,7 @@ handleKeyboard model keyMsg =
         )
 
 
+generateRandomEnemies : Time -> Model -> Cmd Msg
 generateRandomEnemies time model =
     if floor (Time.inMilliseconds time) % 100 == 0 then
         model.game

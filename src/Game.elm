@@ -6,7 +6,6 @@ import Character exposing (Character)
 import Helpers exposing (..)
 import List exposing (..)
 import Html exposing (..)
-import Html.App as Html
 import Html.Attributes exposing (..)
 import Helpers exposing (..)
 import Random
@@ -152,7 +151,7 @@ updateSpeedGenerator id =
 generateRandomEnemies : Game -> Cmd Msg
 generateRandomEnemies { enemies } =
     enemies
-        |> map (\e -> Random.generate identity (updateSpeedGenerator e.id))
+        |> List.map (\e -> Random.generate identity (updateSpeedGenerator e.id))
         |> Cmd.batch
 
 
